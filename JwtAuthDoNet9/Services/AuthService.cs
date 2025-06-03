@@ -31,7 +31,8 @@ namespace JwtAuthDoNet9.Services
             var claim = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, user.Role)
             }; 
 
             var tmpK = configuration.GetValue<string>("AppSettings:Token");

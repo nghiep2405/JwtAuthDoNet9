@@ -44,5 +44,12 @@ namespace JwtAuthDoNet9.Controllers
         {
             return Ok("You are authenticated!");
         }
+
+        [Authorize(Roles ="Admin")]
+        [HttpGet("admin-only")]
+        public IActionResult AdminOnlyendpoint()
+        {
+            return Ok("You are Admin!");
+        }
     }
 }
