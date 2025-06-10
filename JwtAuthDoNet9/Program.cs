@@ -1,4 +1,4 @@
-using JwtAuthDoNet9.Data;
+﻿using JwtAuthDoNet9.Data;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,6 +37,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 
+// connect backend and frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("https://localhost:56093") // đúng port frontend
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +57,9 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 
 }
+
+
+app.UseCors("AllowReactApp");
 
 app.UseHttpsRedirection();
 

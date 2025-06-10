@@ -28,7 +28,7 @@ namespace JwtAuthDoNet9.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<string>> Login([FromBody] UserDto request)
         {
             var token = await authService.LoginAsync(request);
             if(token is null)
