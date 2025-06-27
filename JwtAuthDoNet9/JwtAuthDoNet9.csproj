@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="NewFolder2\**" />
+    <Compile Remove="NewFolder\**" />
     <Content Remove="NewFolder2\**" />
+    <Content Remove="NewFolder\**" />
     <EmbeddedResource Remove="NewFolder2\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
     <None Remove="NewFolder2\**" />
+    <None Remove="NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,12 +26,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.4.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.11.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="NewFolder\" />
   </ItemGroup>
 
 </Project>

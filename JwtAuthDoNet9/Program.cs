@@ -6,6 +6,7 @@ using JwtAuthDoNet9.Services;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using ReactForUI.Server.Data;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
@@ -37,7 +38,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 
-// connect backend and frontend
+builder.Services.AddSingleton<MongoDbContext>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    return new MongoDbContext(configuration);
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
@@ -47,6 +53,7 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
 
 var app = builder.Build();
 
