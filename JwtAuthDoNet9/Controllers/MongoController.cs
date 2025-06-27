@@ -3,6 +3,8 @@ using ReactForUI.Server.Entities;
 using ReactForUI.Server.Data;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Authorization;
+using MongoDB.Bson;
+using ZstdSharp.Unsafe;
 
 namespace ReactForUI.Server.Controllers
 {
@@ -23,6 +25,29 @@ namespace ReactForUI.Server.Controllers
         {
             var books = await _context.Books.Find(_ => true).ToListAsync();
             return Ok(books);
+        }
+
+        //[Authorize]
+        [HttpPost("addBooks")]
+        public async Task<IActionResult> AddBooks([FromBody] Book book)
+        {
+            await _context.Books.InsertOneAsync(book);  
+            return Ok(book);
+        }
+
+        [HttpDelete("books/{id}")]
+        public async Task<IActionResult> DeleteBooks([FromRoute(Name = "id")] string bookId)
+        {
+            //var objectId = new ObjectId(bookId);
+            //var res = await _context.Books.DeleteOneAsync(i => i.Id == objectId);
+
+            // xem bookId là tên
+            var res = await _context.Books.DeleteOneAsync(i => i.Title == bookId);
+            if(res.DeletedCount == 0)
+            {
+                NotFound("Không tìm thấy sách bạn cần xóa");
+            }
+            return Ok("Đã xóa thành công");
         }
     }
 }

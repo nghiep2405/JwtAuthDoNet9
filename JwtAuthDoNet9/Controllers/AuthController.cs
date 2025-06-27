@@ -41,7 +41,7 @@ namespace JwtAuthDoNet9.Controllers
         [Authorize]
         [HttpGet]
         public IActionResult AuthenticatedOnlyendpoint()
-        {
+        {       
             return Ok("You are authenticated!");
         }
 
