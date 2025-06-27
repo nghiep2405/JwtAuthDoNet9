@@ -49,5 +49,18 @@ namespace ReactForUI.Server.Controllers
             }
             return Ok("Đã xóa thành công");
         }
+        [HttpPut("updatePrice/{id}")]
+        public async Task<IActionResult> UpdatePrice([FromRoute(Name = "id")] string bookId, [FromBody] double nPrice)
+        {
+            var filter = Builders<Book>.Filter.Eq(b => b.Title, bookId);
+            var update = Builders<Book>.Update.Set(b => b.Price, nPrice);
+
+            var res = await _context.Books.UpdateOneAsync(filter, update);
+            if(res.ModifiedCount == 0)
+            {
+                NotFound("Không tìm thấy sách để cập nhật lại giá");
+            }
+            return Ok("Đã cập nhật giá thành công");
+        }
     }
 }
