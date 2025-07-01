@@ -31,6 +31,12 @@ namespace ReactForUI.Server.Controllers
         [HttpPost("addBooks")]
         public async Task<IActionResult> AddBooks([FromBody] Book book)
         {
+            book.Id = "";
+            // Nếu Id rỗng hoặc null thì để mặc định cho MongoDB tự sinh
+            if (string.IsNullOrEmpty(book.Id))
+            {
+                book.Id = ObjectId.GenerateNewId().ToString();
+            }
             await _context.Books.InsertOneAsync(book);  
             return Ok(book);
         }
@@ -42,7 +48,7 @@ namespace ReactForUI.Server.Controllers
             //var res = await _context.Books.DeleteOneAsync(i => i.Id == objectId);
 
             // xem bookId là tên
-            var res = await _context.Books.DeleteOneAsync(i => i.Title == bookId);
+            var res = await _context.Books.DeleteOneAsync(i => i.Id == bookId);
             if(res.DeletedCount == 0)
             {
                 NotFound("Không tìm thấy sách bạn cần xóa");
@@ -52,7 +58,7 @@ namespace ReactForUI.Server.Controllers
         [HttpPut("updatePrice/{id}")]
         public async Task<IActionResult> UpdatePrice([FromRoute(Name = "id")] string bookId, [FromBody] double nPrice)
         {
-            var filter = Builders<Book>.Filter.Eq(b => b.Title, bookId);
+            var filter = Builders<Book>.Filter.Eq(b => b.Id, bookId);
             var update = Builders<Book>.Update.Set(b => b.Price, nPrice);
 
             var res = await _context.Books.UpdateOneAsync(filter, update);

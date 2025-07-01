@@ -4,7 +4,11 @@ namespace ReactForUI.Server.Entities
 {
     public class Book
     {
-        public ObjectId Id { get; set; }  // Change to ObjectId
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+
+        //public ObjectId Id { get; set; }  // Change to ObjectId
         [BsonElement("title")]
         public string Title { get; set; }
         [BsonElement("author")]
