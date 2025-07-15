@@ -16,6 +16,8 @@ builder.Services.AddOpenApi("v1");
 builder.Services.AddDbContext<UserDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UserDatabase")));
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+// Building cache
+builder.Services.AddMemoryCache();  
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {

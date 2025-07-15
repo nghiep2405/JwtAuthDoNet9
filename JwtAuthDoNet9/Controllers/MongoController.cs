@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson;
 using ZstdSharp.Unsafe;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ReactForUI.Server.Controllers
 {
@@ -13,18 +14,32 @@ namespace ReactForUI.Server.Controllers
     public class MongoController : ControllerBase
     {
         private readonly MongoDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public MongoController(MongoDbContext context)
+        public MongoController(MongoDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         //[Authorize]
         [HttpGet("books")]
         public async Task<IActionResult> GetBooks()
-        {
-            var books = await _context.Books.Find(_ => true).ToListAsync();
+        {   
+            if(!_cache.TryGetValue("books", value: out List<Book> books))
+            {
+                books = await _context.Books.Find(_ => true).ToListAsync();
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(60)); // cache tồn tại 60s
+
+                _cache.Set("books", books, cacheOptions);
+            }
             return Ok(books);
+
+            // Lúc chưa xài cache
+            //var books = await _context.Books.Find(_ => true).ToListAsync();
+            //return Ok(books);
         }
 
         //[Authorize]
@@ -37,7 +52,8 @@ namespace ReactForUI.Server.Controllers
             {
                 book.Id = ObjectId.GenerateNewId().ToString();
             }
-            await _context.Books.InsertOneAsync(book);  
+            await _context.Books.InsertOneAsync(book);
+            _cache.Remove("books");
             return Ok(book);
         }
 
@@ -49,6 +65,7 @@ namespace ReactForUI.Server.Controllers
 
             // xem bookId là tên
             var res = await _context.Books.DeleteOneAsync(i => i.Id == bookId);
+            _cache.Remove("books");
             if(res.DeletedCount == 0)
             {
                 NotFound("Không tìm thấy sách bạn cần xóa");
@@ -66,6 +83,7 @@ namespace ReactForUI.Server.Controllers
             {
                 NotFound("Không tìm thấy sách để cập nhật lại giá");
             }
+            _cache.Remove("books");
             return Ok("Đã cập nhật giá thành công");
         }
     }
