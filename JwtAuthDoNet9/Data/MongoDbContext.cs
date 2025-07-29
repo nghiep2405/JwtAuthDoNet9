@@ -16,5 +16,6 @@ namespace ReactForUI.Server.Data
         }
 
         public IMongoCollection<Book> Books => _database.GetCollection<Book>("books");
+        public IMongoCollection<Cart> Carts => _database.GetCollection<Cart>("carts");
     }
 }

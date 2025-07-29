@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ReactForUI.Server.Data;
+using ReactForUI.Server.Controllers;
+using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
@@ -45,6 +47,13 @@ builder.Services.AddSingleton<MongoDbContext>(sp =>
     var configuration = sp.GetRequiredService<IConfiguration>();
     return new MongoDbContext(configuration);
 });
+
+//builder.Services.AddSingleton<CartController>(sp =>
+//{
+//    var mongoDb = sp.GetRequiredService<MongoDbContext>();
+//    return new CartController(mongoDb);
+//});
+
 
 builder.Services.AddCors(options =>
 {
